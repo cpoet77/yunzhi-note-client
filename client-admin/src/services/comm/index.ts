@@ -2,7 +2,9 @@
 /* eslint-disable */
 // API 更新时间：
 // API 唯一标识：
-import * as auth from './auth';
+import * as Auth from './Auth';
+import * as Member from './Member';
 export default {
-  auth,
+  Auth,
+  Member,
 };

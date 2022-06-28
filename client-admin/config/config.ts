@@ -1,6 +1,5 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
-import { join } from 'path';
 
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
@@ -58,15 +57,12 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from 'umi'",
-      schemaPath: 'http://localhost:8080/api/server/v3/api-docs/yunzhi-note-server',
-      projectName: 'server',
+      schemaPath: 'http://localhost:8090/api/v3/api-docs/open',
+      projectName: 'comm',
+      apiPrefix: "'/api'",
+      namespace: 'CommApi',
       mock: false,
-    },
-    // {
-    //   requestLibPath: "import { request } from 'umi'",
-    //   schemaPath: 'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
-    //   projectName: 'swagger',
-    // },
+    }
   ],
   nodeModulesTransform: { type: 'none' },
   mfsu: {},
