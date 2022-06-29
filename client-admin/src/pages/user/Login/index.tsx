@@ -48,33 +48,22 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: CommApi.AccountPassDTO) => {
     try {
-      console.log(values);
       // 登录
-      const msg = await login({ ...values });
-      console.log(3333, msg);
-      // if (msg.status === 'ok') {
-      //   const defaultLoginSuccessMessage = intl.formatMessage({
-      //     id: 'pages.login.success',
-      //     defaultMessage: '登录成功！',
-      //   });
-      //   message.success(defaultLoginSuccessMessage);
-      //   await fetchUserInfo();
-      //   /** 此方法会跳转到 redirect 参数所在的位置 */
-      //   if (!history) return;
-      //   const { query } = history.location;
-      //   const { redirect } = query as { redirect: string };
-      //   history.push(redirect || '/');
-      //   return;
-      // }
-      // console.log(msg);
-      // // 如果失败去设置用户错误信息
-      // setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
+      const ret = await login({ ...values });
+      const defaultLoginSuccessMessage = intl.formatMessage({
+        id: 'pages.login.success',
+        defaultMessage: '登录成功！',
       });
-      message.error(defaultLoginFailureMessage);
+      message.success(defaultLoginSuccessMessage);
+      await fetchUserInfo();
+      /** 此方法会跳转到 redirect 参数所在的位置 */
+      if (!history) return;
+      const { query } = history.location;
+      const { redirect } = query as { redirect: string };
+      history.push(redirect || '/');
+    } catch (err) {
+      // 如果失败去设置用户错误信息
+      setUserLoginState({});
     }
   };
   const { status, type: loginType } = userLoginState;
@@ -87,7 +76,7 @@ const Login: React.FC = () => {
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          title="Yunzhi Note"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,
