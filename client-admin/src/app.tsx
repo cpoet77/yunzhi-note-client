@@ -5,12 +5,13 @@ import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getInfo as getMemberInfo } from '@/services/comm/Member';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 export { requestConfig as request } from '@/services/request';
 
 const isDev = process.env.NODE_ENV === 'development';
+
 const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -23,29 +24,55 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: CurrentUser;
+  userSession?: UserSession,
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  refreshUserSession?: (token: string, expired: Date, clear: boolean) => Promise<UserSession | undefined>;
+  fetchUserInfo?: () => Promise<CurrentUser | undefined>;
 }> {
+  const USER_SESSION_STORAGE_KEY = '$uesrSession';
+
+  // 刷新用户会话信息
+  const refreshUserSession = async (token: string | null = null, expired: Date | null = null, clear: boolean = false) => {
+    if (clear) {
+      localStorage.removeItem(USER_SESSION_STORAGE_KEY);
+      return undefined;
+    }
+    if (token && expired) {
+      const session = { token, expired };
+      localStorage.setItem(USER_SESSION_STORAGE_KEY, JSON.stringify(session));
+      return (session as UserSession);
+    }
+    const session = localStorage.getItem(USER_SESSION_STORAGE_KEY);
+    return session ? (JSON.parse(session) as UserSession) : undefined;
+  };
+
+  // 获取用户信息
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
-      return msg.data;
+      const memberInfo = await getMemberInfo();
+      return memberInfo as CurrentUser;
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
   };
+
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
+    const userSession = await refreshUserSession();
     const currentUser = await fetchUserInfo();
     return {
+      refreshUserSession,
       fetchUserInfo,
+      userSession,
       currentUser,
       settings: defaultSettings,
     };
   }
+
   return {
+    refreshUserSession,
     fetchUserInfo,
     settings: defaultSettings,
   };

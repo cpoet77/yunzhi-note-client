@@ -24,6 +24,7 @@ const respInterceptor: ResponseInterceptor = (resp, options) => {
       });
       return Promise.resolve(new Response(stream, { ...resp }));
     }).catch(err => {
+      (err as ResultVO).
       console.error(`Failed to parse the returned result: ${err}`);
       return Promise.reject(resp);
     });

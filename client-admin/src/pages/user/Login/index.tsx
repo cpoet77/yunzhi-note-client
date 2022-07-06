@@ -55,6 +55,7 @@ const Login: React.FC = () => {
         defaultMessage: '登录成功！',
       });
       message.success(defaultLoginSuccessMessage);
+      // await initialState?.refreshUserSession();
       await fetchUserInfo();
       /** 此方法会跳转到 redirect 参数所在的位置 */
       if (!history) return;
