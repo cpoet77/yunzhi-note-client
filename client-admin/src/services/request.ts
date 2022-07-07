@@ -1,7 +1,16 @@
 // @ts-ignore
 /* eslint-disable */
 import { message, notification } from 'antd';
-import { extend } from 'umi-request';
+
+import {
+  extend,
+  RequestMethod,
+  RequestResponse,
+  RequestOptionsInit,
+  RequestOptionsWithoutResponse,
+  RequestOptionsWithResponse,
+  Context
+} from 'umi-request';
 
 const _USER_SESSION_STORAGE_KEY = '_session';
 
@@ -38,66 +47,107 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-// 异常处理程序
-const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
-  if (response && response.status) {
-    const { status } = response;
-    const errorText = codeMessage[response.status] || response.statusText;
-    notification.error({
-      message: `请求错误 [${status}]`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
+let requestMethodInstance: RequestMethod;
+const getRequestMethod = () => {
+  if (requestMethodInstance) {
+    return requestMethodInstance;
   }
-  return response;
-};
 
-// 配置request请求时的默认参数
-const request = extend({
-  // 错误处理
-  errorHandler,
-  // 是否带上cookie
-  credentials: 'omit'
-});
-
-
-// 请求拦截器
-request.interceptors.request.use((url, options): any => {
-  const token = getCurrentSession()?.token;
-  // 添加认证Token至请求头
-  if (token) {
-    return { url, options: { ...options, headers: { Authentication: token } } }
+  // 自定义请求异常类
+  interface RequestError extends Error {
+    // 自定义提示信息
+    msg?: string,
+    // 响应结果
+    response?: Context['res'];
   }
-  return { url, options };
-});
 
-const _TEXT_ENCODER = new TextEncoder();
-
-// 响应拦截器
-request.interceptors.response.use(async (response, options): Promise<any> => {
-  const { status } = response;
-  const ret = await response.clone().json();
-  if (status === 200) {
-    const { code, msg } = ret;
-    if (code !== 0) {
-      message.error(msg);
-      return Promise.reject(response);
-    }
-    const stream = new ReadableStream({
-      start: controller => {
-        const newRetArr = _TEXT_ENCODER.encode(JSON.stringify(ret['data']));
-        controller.enqueue(newRetArr);
-        controller.close();
+  // request全局配置
+  requestMethodInstance = extend({
+    // 全局错误处理
+    errorHandler: (error: RequestError): void => {
+      const { response } = error;
+      if (response && response.status) {
+        const { status } = response;
+        if (status === 200) {
+          message.error(error.msg);
+        } else {
+          const errorText = codeMessage[response.status] || response.statusText;
+          notification.error({
+            message: `请求错误 [${status}]`,
+            description: errorText,
+          });
+        }
+      } else if (!response) {
+        notification.error({
+          description: '您的网络发生异常，无法连接服务器',
+          message: '网络异常',
+        });
       }
-    });
-    return Promise.resolve(new Response(stream, { ...response }));
-  }
-  return Promise.reject(response);
-});
+      throw error;
+    },
+    // 请求时是否携带cookie
+    credentials: 'omit'
+  });
+
+  // 请求拦截器
+  requestMethodInstance.interceptors.request.use((url, options): any => {
+    const token = getCurrentSession()?.token;
+    // 添加认证Token至请求头
+    if (token) {
+      return { url, options: { ...options, headers: { Authentication: token } } }
+    }
+    return { url, options };
+  });
+
+  const _TEXT_ENCODER = new TextEncoder();
+
+  // 响应拦截器
+  requestMethodInstance.interceptors.response.use(async (response, options): Promise<Response> => {
+    const { status } = response;
+    if (status === 200) {
+      const ret = await response.clone().json();
+      const { code, msg } = ret;
+      if (code !== 0) {
+        const err: RequestError = new Error(msg);
+        err.msg = msg;
+        err.response = response;
+        throw err;
+      }
+      const stream = new ReadableStream({
+        start: controller => {
+          const newRetArr = _TEXT_ENCODER.encode(JSON.stringify(ret['data']));
+          controller.enqueue(newRetArr);
+          controller.close();
+        }
+      });
+      return Promise.resolve(new Response(stream, { ...response }));
+    }
+    const err: RequestError = new Error();
+    err.response = response;
+    throw err;
+  });
+
+  return requestMethodInstance;
+}
+
+interface RequestMethodInUmi<R = false> {
+  <T = any>(
+    url: string,
+    options: RequestOptionsWithResponse & { skipErrorHandler?: boolean },
+  ): Promise<RequestResponse<T>>;
+  <T = any>(
+    url: string,
+    options: RequestOptionsWithoutResponse & { skipErrorHandler?: boolean },
+  ): Promise<T>;
+  <T = any>(
+    url: string,
+    options?: RequestOptionsInit & { skipErrorHandler?: boolean },
+  ): R extends true ? Promise<RequestResponse<T>> : Promise<T>;
+}
+
+const request: RequestMethodInUmi = (url: any, options: any) => {
+  const requestMethod = getRequestMethod();
+  return requestMethod(url, options);
+};
 
 export { request };

@@ -4,6 +4,8 @@ type CurrentUser = {
   id?: number,
   // 用户昵称
   nickName?: string,
+  // 用户头像
+  avatar?: string,
   // 用户账号信息
   account?: string
 };

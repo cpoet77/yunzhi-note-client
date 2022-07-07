@@ -2,17 +2,12 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { SettingDrawer } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
-import { history, Link } from 'umi';
+import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { getInfo as getMemberInfo } from '@/services/comm/Member';
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import { getCurrentSession, setCurentSession } from '@/services/request';
-import { listMemberPermission, listMemberRole } from './services/comm/Member';
-export { requestConfig as request } from '@/services/request';
-
-const isDev = process.env.NODE_ENV === 'development';
 
 const loginPath = '/user/login';
 
@@ -38,17 +33,13 @@ export async function getInitialState(): Promise<{
       setCurentSession(currentSession);
     }
     return getCurrentSession();
+    return undefined;
   }
 
   // 获取用户信息
   const fetchUserInfo = async () => {
     try {
       const memberInfo = await getMemberInfo();
-      const permission = await listMemberPermission();
-      console.log(permission);
-      const roles = await listMemberRole();
-      console.log(roles);
-      console.log(roles[0]);
       return { ...memberInfo };
     } catch (error) {
       history.push(loginPath);
@@ -92,18 +83,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
       }
     },
-    links: isDev
-      ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-        <Link to="/~docs" key="docs">
-          <BookOutlined />
-          <span>业务组件文档</span>
-        </Link>,
-      ]
-      : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,

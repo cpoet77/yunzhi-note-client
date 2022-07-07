@@ -1,6 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from 'umi';
+import { request } from '@/services/request';
 
 /** 账号密码登录 POST /auth/login */
 export async function login(body: CommApi.AccountPassDTO, options?: { [key: string]: any }) {

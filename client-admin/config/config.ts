@@ -54,10 +54,6 @@ export default defineConfig({
   },
   // Fast Refresh 热更新
   fastRefresh: {},
-  // 角色request的数据属性
-  request: {
-    dataField: 'data',
-  },
   openAPI: [
     {
       requestLibPath: "import { request } from '@/services/request'",

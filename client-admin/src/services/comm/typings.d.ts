@@ -41,6 +41,8 @@ declare namespace CommApi {
     code?: string;
     /** 资源名称 */
     name?: string;
+    /** 路径 */
+    path?: string;
     /** 图标 */
     icon?: string;
     /** 绑定的i18n */
@@ -54,13 +56,13 @@ declare namespace CommApi {
   };
 
   type ResultVOObject = {
+    /** 响应时间戳 */
+    timestamp?: number;
+    /** 结果数据 */
+    data?: Record<string, any>;
     message?: string;
     /** 响应码 */
     code?: number;
-    /** 结果数据 */
-    data?: Record<string, any>;
-    /** 响应时间戳 */
-    timestamp?: number;
     /** 链路跨度Id */
     spanId?: number;
   };
