@@ -1,17 +1,19 @@
 // 用户信息
 type CurrentUser = {
   // 用户id
-  id: string,
-  // 用户姓名
-  name: string,
+  id?: number,
+  // 用户昵称
+  nickName?: string,
   // 用户账号信息
-  account: string
+  account?: string
 };
 
 // 用户会话信息
-type UserSession = {
+type CurrentSession = {
+  // 用户uid
+  uid?: number,
   // 会话Token
-  token: string,
+  token?: string,
   // Token过期时间
-  expired: Date
+  expired?: string
 }

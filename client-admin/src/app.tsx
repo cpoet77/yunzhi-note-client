@@ -8,6 +8,8 @@ import Footer from '@/components/Footer';
 import { getInfo as getMemberInfo } from '@/services/comm/Member';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
+import { getCurrentSession, setCurentSession } from '@/services/request';
+import { listMemberPermission, listMemberRole } from './services/comm/Member';
 export { requestConfig as request } from '@/services/request';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -25,33 +27,29 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: CurrentUser;
-  userSession?: UserSession,
+  currentSession?: CurrentSession;
   loading?: boolean;
-  refreshUserSession?: (token: string, expired: Date, clear: boolean) => Promise<UserSession | undefined>;
+  fetchSession?: (currentSession: CurrentSession) => Promise<CurrentSession | undefined>;
   fetchUserInfo?: () => Promise<CurrentUser | undefined>;
 }> {
-  const USER_SESSION_STORAGE_KEY = '$uesrSession';
-
-  // 刷新用户会话信息
-  const refreshUserSession = async (token: string | null = null, expired: Date | null = null, clear: boolean = false) => {
-    if (clear) {
-      localStorage.removeItem(USER_SESSION_STORAGE_KEY);
-      return undefined;
+  // 用户会话信息管理
+  const fetchSession = async (currentSession?: CurrentSession) => {
+    if (currentSession !== undefined) {
+      setCurentSession(currentSession);
     }
-    if (token && expired) {
-      const session = { token, expired };
-      localStorage.setItem(USER_SESSION_STORAGE_KEY, JSON.stringify(session));
-      return (session as UserSession);
-    }
-    const session = localStorage.getItem(USER_SESSION_STORAGE_KEY);
-    return session ? (JSON.parse(session) as UserSession) : undefined;
-  };
+    return getCurrentSession();
+  }
 
   // 获取用户信息
   const fetchUserInfo = async () => {
     try {
       const memberInfo = await getMemberInfo();
-      return memberInfo as CurrentUser;
+      const permission = await listMemberPermission();
+      console.log(permission);
+      const roles = await listMemberRole();
+      console.log(roles);
+      console.log(roles[0]);
+      return { ...memberInfo };
     } catch (error) {
       history.push(loginPath);
     }
@@ -60,20 +58,20 @@ export async function getInitialState(): Promise<{
 
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
-    const userSession = await refreshUserSession();
+    const currentSession = await fetchSession();
     const currentUser = await fetchUserInfo();
     return {
-      refreshUserSession,
       fetchUserInfo,
-      userSession,
+      fetchSession,
+      currentSession,
       currentUser,
       settings: defaultSettings,
     };
   }
 
   return {
-    refreshUserSession,
     fetchUserInfo,
+    fetchSession,
     settings: defaultSettings,
   };
 }
@@ -84,7 +82,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.nickName,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {

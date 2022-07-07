@@ -50,13 +50,17 @@ export default defineConfig({
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
-    basePath: '/',
+    basePath: './',
   },
   // Fast Refresh 热更新
   fastRefresh: {},
+  // 角色request的数据属性
+  request: {
+    dataField: 'data',
+  },
   openAPI: [
     {
-      requestLibPath: "import { request } from 'umi'",
+      requestLibPath: "import { request } from '@/services/request'",
       schemaPath: 'http://localhost:8090/api/v3/api-docs/open',
       projectName: 'comm',
       apiPrefix: "'/api'",

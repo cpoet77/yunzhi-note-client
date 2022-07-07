@@ -36,11 +36,13 @@ const Login: React.FC = () => {
 
   const intl = useIntl();
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (authToken: CommApi.AuthTokenVO) => {
+    const session = await initialState?.fetchSession?.({ ...authToken });
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       await setInitialState((s) => ({
         ...s,
+        currentSession: session,
         currentUser: userInfo,
       }));
     }
@@ -55,8 +57,7 @@ const Login: React.FC = () => {
         defaultMessage: '登录成功！',
       });
       message.success(defaultLoginSuccessMessage);
-      // await initialState?.refreshUserSession();
-      await fetchUserInfo();
+      await fetchUserInfo(ret);
       /** 此方法会跳转到 redirect 参数所在的位置 */
       if (!history) return;
       const { query } = history.location;

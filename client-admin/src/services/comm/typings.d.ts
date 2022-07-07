@@ -13,6 +13,8 @@ declare namespace CommApi {
     uid?: number;
     /** 认证Token */
     token?: string;
+    /** 过期时间 */
+    expired?: string;
   };
 
   type MemberInfoVO = {
@@ -30,12 +32,49 @@ declare namespace CommApi {
     summary?: string;
   };
 
-  type ResultVO = {
-    /** 响应时间戳 */
-    timestamp?: number;
-    /** 结果数据 */
-    data?: Record<string, any>;
+  type PermissionTreeVO = {
+    /** 权限id */
+    id?: number;
+    /** 父权限id */
+    parentId?: number;
+    /** 资源编码 */
+    code?: string;
+    /** 资源名称 */
+    name?: string;
+    /** 图标 */
+    icon?: string;
+    /** 绑定的i18n */
+    bindI18n?: string;
+    /** 排序 */
+    sorted?: number;
+    /** 权限类型 */
+    type?: '1' | '2' | '4' | '8' | '16' | '1024';
+    /** 子权限列表 */
+    children?: PermissionTreeVO[];
+  };
+
+  type ResultVOObject = {
+    message?: string;
     /** 响应码 */
     code?: number;
+    /** 结果数据 */
+    data?: Record<string, any>;
+    /** 响应时间戳 */
+    timestamp?: number;
+    /** 链路跨度Id */
+    spanId?: number;
+  };
+
+  type RoleVO = {
+    /** 角色id */
+    id?: number;
+    /** 角色编码 */
+    code?: string;
+    /** 角色名称 */
+    name?: string;
+    /** 排序 */
+    sorted?: number;
+    /** 绑定的I18n */
+    bindI18n?: string;
   };
 }
