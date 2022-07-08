@@ -33,7 +33,6 @@ export async function getInitialState(): Promise<{
       setCurentSession(currentSession);
     }
     return getCurrentSession();
-    return undefined;
   }
 
   // 获取用户信息

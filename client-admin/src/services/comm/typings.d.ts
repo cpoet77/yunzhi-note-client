@@ -17,6 +17,19 @@ declare namespace CommApi {
     expired?: string;
   };
 
+  type I18nMapVO = {
+    /** 键名 */
+    key?: string;
+    /** 值 */
+    value?: string;
+  };
+
+  type listI18nParams = {
+    scenes?: string;
+    group?: string;
+    locale: '0' | '1' | '2';
+  };
+
   type MemberInfoVO = {
     /** 用户id */
     id?: number;
@@ -58,11 +71,11 @@ declare namespace CommApi {
   type ResultVOObject = {
     /** 响应时间戳 */
     timestamp?: number;
+    /** 响应码 */
+    code?: number;
     /** 结果数据 */
     data?: Record<string, any>;
     message?: string;
-    /** 响应码 */
-    code?: number;
     /** 链路跨度Id */
     spanId?: number;
   };
