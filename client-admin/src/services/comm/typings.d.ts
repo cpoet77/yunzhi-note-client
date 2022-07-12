@@ -24,10 +24,13 @@ declare namespace CommApi {
     value?: string;
   };
 
-  type listI18nParams = {
+  type I18nQueryDTO = {
+    /** 使用场景 */
     scenes?: string;
+    /** 使用分组 */
     group?: string;
-    locale: '0' | '1' | '2';
+    /** 查询区域 */
+    locale?: '0' | '1' | '2';
   };
 
   type MemberInfoVO = {
@@ -71,11 +74,11 @@ declare namespace CommApi {
   type ResultVOObject = {
     /** 响应时间戳 */
     timestamp?: number;
+    message?: string;
     /** 响应码 */
     code?: number;
     /** 结果数据 */
     data?: Record<string, any>;
-    message?: string;
     /** 链路跨度Id */
     spanId?: number;
   };
