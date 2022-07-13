@@ -9,7 +9,7 @@ export class Options {
         cache: {
             enable: true,
         },
-        cdn: Constants.CDN,
+        cdn: Constants.PATH_PREFIX,
         classes: {
             preview: "",
         },
@@ -37,7 +37,7 @@ export class Options {
                 "smile": "😄",
                 "tada": "🎉️",
             },
-            emojiPath: `${Constants.CDN}/dist/images/emoji`,
+            emojiPath: `${Constants.PATH_PREFIX}/images/emoji`,
             extend: [],
             parse: true,
         },

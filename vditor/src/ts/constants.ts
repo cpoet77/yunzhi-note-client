@@ -29,7 +29,7 @@ export abstract class Constants {
     // ext
     "solidity", "yul"
   ];
-  public static readonly CDN = `https://unpkg.com/vditor@${VDITOR_VERSION}`;
+  public static readonly PATH_PREFIX = `/vditor`;
   public static readonly MARKDOWN_OPTIONS = {
     autoSpace: false,
     codeBlockPreview: true,
@@ -62,6 +62,6 @@ export abstract class Constants {
       "light": "Light",
       "wechat": "WeChat",
     },
-    path: `${Constants.CDN}/dist/css/content-theme`,
+    path: `${Constants.PATH_PREFIX}/css/content-theme`,
   };
 }

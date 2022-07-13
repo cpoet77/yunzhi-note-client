@@ -6,12 +6,12 @@ declare const plantumlEncoder: {
     encode(options: string): string,
 };
 
-export const plantumlRender = (element: (HTMLElement | Document) = document, cdn = Constants.CDN) => {
+export const plantumlRender = (element: (HTMLElement | Document) = document, cdn = Constants.PATH_PREFIX) => {
     const plantumlElements = plantumlRenderAdapter.getElements(element);
     if (plantumlElements.length === 0) {
         return;
     }
-    addScript(`${cdn}/dist/js/plantuml/plantuml-encoder.min.js`, "vditorPlantumlScript").then(() => {
+    addScript(`${cdn}/js/plantuml/plantuml-encoder.min.js`, "vditorPlantumlScript").then(() => {
         plantumlElements.forEach((e: HTMLDivElement) => {
             if (e.parentElement.classList.contains("vditor-wysiwyg__pre") ||
                 e.parentElement.classList.contains("vditor-ir__marker--pre")) {

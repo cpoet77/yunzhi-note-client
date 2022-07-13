@@ -6,12 +6,12 @@ declare const flowchart: {
     parse(text: string): { drawSVG: (type: HTMLElement) => void };
 };
 
-export const flowchartRender = (element: HTMLElement, cdn = Constants.CDN) => {
+export const flowchartRender = (element: HTMLElement, cdn = Constants.PATH_PREFIX) => {
     const flowchartElements = flowchartRenderAdapter.getElements(element);
     if (flowchartElements.length === 0) {
         return;
     }
-    addScript(`${cdn}/dist/js/flowchart.js/flowchart.min.js`, "vditorFlowchartScript").then(() => {
+    addScript(`${cdn}/js/flowchart.js/flowchart.min.js`, "vditorFlowchartScript").then(() => {
         flowchartElements.forEach((item: HTMLElement) => {
             if (item.getAttribute("data-processed") === "true") {
                 return;

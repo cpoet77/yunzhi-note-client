@@ -1,4 +1,4 @@
-export const menus = [
+export const Menus = [
     {
         path: '/home',
         name: '首页',

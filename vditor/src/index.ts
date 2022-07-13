@@ -80,7 +80,7 @@ class Vditor extends VditorMethod {
                         document.head.removeChild(el);
                     }
                 });
-                addScript(`${mergedOptions.cdn}/dist/js/i18n/${mergedOptions.lang}.js`, i18nScriptID).then(() => {
+                addScript(`${mergedOptions.cdn}/js/i18n/${mergedOptions.lang}.js`, i18nScriptID).then(() => {
                     this.init(id as HTMLElement, mergedOptions);
                 });
             }
@@ -472,7 +472,7 @@ class Vditor extends VditorMethod {
 
         addScript(
             mergedOptions._lutePath ||
-            `${mergedOptions.cdn}/dist/js/lute/lute.min.js`,
+            `${mergedOptions.cdn}/js/lute/lute.min.js`,
             "vditorLuteScript",
         ).then(() => {
             this.vditor.lute = setLute({
@@ -506,7 +506,7 @@ class Vditor extends VditorMethod {
             }
             if (mergedOptions.icon) {
                 // 防止初始化 2 个编辑器时加载 2 次
-                addScriptSync(`${mergedOptions.cdn}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
+                addScriptSync(`${mergedOptions.cdn}/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
             }
         });
     }

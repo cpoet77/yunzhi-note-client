@@ -22,11 +22,11 @@ import {speechRender} from "./speechRender";
 const mergeOptions = (options?: IPreviewOptions) => {
     const defaultOption: IPreviewOptions = {
         anchor: 0,
-        cdn: Constants.CDN,
+        cdn: Constants.PATH_PREFIX,
         customEmoji: {},
         emojiPath: `${
-            (options && options.emojiPath) || Constants.CDN
-        }/dist/images/emoji`,
+            (options && options.emojiPath) || Constants.PATH_PREFIX
+        }/images/emoji`,
         hljs: Constants.HLJS_OPTIONS,
         icon: "ant",
         lang: "zh_CN",
@@ -43,7 +43,7 @@ const mergeOptions = (options?: IPreviewOptions) => {
 
 export const md2html = (mdText: string, options?: IPreviewOptions) => {
     const mergedOptions = mergeOptions(options);
-    return addScript(`${mergedOptions.cdn}/dist/js/lute/lute.min.js`, "vditorLuteScript").then(() => {
+    return addScript(`${mergedOptions.cdn}/js/lute/lute.min.js`, "vditorLuteScript").then(() => {
         const lute = setLute({
             autoSpace: mergedOptions.markdown.autoSpace,
             codeBlockPreview: mergedOptions.markdown.codeBlockPreview,
@@ -97,14 +97,14 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
                     document.head.removeChild(el);
                 }
             });
-            await addScript(`${mergedOptions.cdn}/dist/js/i18n/${mergedOptions.lang}.js`, i18nScriptID);
+            await addScript(`${mergedOptions.cdn}/js/i18n/${mergedOptions.lang}.js`, i18nScriptID);
         }
     } else {
         window.VditorI18n = mergedOptions.i18n;
     }
 
     if (mergedOptions.icon) {
-        await addScript(`${mergedOptions.cdn}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
+        await addScript(`${mergedOptions.cdn}/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
     }
 
     setContentTheme(mergedOptions.theme.current, mergedOptions.theme.path);

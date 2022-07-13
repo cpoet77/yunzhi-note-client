@@ -1,3 +1,14 @@
 @import '~antd/dist/antd.css';
-@import '@ant-design/pro-layout/dist/layout.css';
+@import '~@ant-design/pro-layout/dist/layout.css';
 @import '~vditor/dist/index.css';
+
+/* 头部面包屑导航 */
+.ant-breadcrumb.note-path-breadcrumb {
+    line-height: unset;
+}
+
+/* 头部同步时间展示 */
+.ant-col.note-header-sync-tip {
+    color: #a9a9a9;
+    font-size: small;
+}

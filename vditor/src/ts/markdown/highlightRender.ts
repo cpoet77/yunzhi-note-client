@@ -7,17 +7,17 @@ declare const hljs: {
 };
 
 export const highlightRender = (hljsOption?: IHljs, element: HTMLElement | Document = document,
-                                cdn = Constants.CDN) => {
+                                cdn = Constants.PATH_PREFIX) => {
   let style = hljsOption.style;
   if (!Constants.CODE_THEME.includes(style)) {
     style = "github";
   }
   const vditorHljsStyle = document.getElementById("vditorHljsStyle") as HTMLLinkElement;
-  const href = `${cdn}/dist/js/highlight.js/styles/${style}.css`;
+  const href = `${cdn}/js/highlight.js/styles/${style}.css`;
   if (vditorHljsStyle && vditorHljsStyle.href !== href) {
     vditorHljsStyle.remove();
   }
-  addStyle(`${cdn}/dist/js/highlight.js/styles/${style}.css`, "vditorHljsStyle");
+  addStyle(`${cdn}/js/highlight.js/styles/${style}.css`, "vditorHljsStyle");
 
   if (hljsOption.enable === false) {
     return;
@@ -28,9 +28,9 @@ export const highlightRender = (hljsOption?: IHljs, element: HTMLElement | Docum
     return;
   }
 
-  addScript(`${cdn}/dist/js/highlight.js/highlight.pack.js`, "vditorHljsScript").then(() => {
-    addScript(`${cdn}/dist/js/highlight.js/solidity.min.js`, "vditorHljsSolidityScript").then(() => {
-      addScript(`${cdn}/dist/js/highlight.js/yul.min.js`, "vditorHljsYulScript").then(() => {
+  addScript(`${cdn}/js/highlight.js/highlight.pack.js`, "vditorHljsScript").then(() => {
+    addScript(`${cdn}/js/highlight.js/solidity.min.js`, "vditorHljsSolidityScript").then(() => {
+      addScript(`${cdn}/js/highlight.js/yul.min.js`, "vditorHljsYulScript").then(() => {
         element.querySelectorAll("pre > code").forEach((block) => {
           // ir & wysiwyg 区域不渲染
           if (block.parentElement.classList.contains("vditor-ir__marker--pre") ||
