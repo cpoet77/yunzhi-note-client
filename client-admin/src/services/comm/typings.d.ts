@@ -6,6 +6,10 @@ declare namespace CommApi {
     password: string;
     /** 验证码 */
     captcha?: string;
+    /** 操作系统信息 */
+    os?: string;
+    /** 终端分辨率 */
+    screen?: string;
   };
 
   type AuthTokenVO = {
@@ -13,8 +17,6 @@ declare namespace CommApi {
     uid?: number;
     /** 认证Token */
     token?: string;
-    /** 过期时间 */
-    expired?: string;
   };
 
   type I18nMapVO = {
@@ -28,7 +30,7 @@ declare namespace CommApi {
     /** 使用场景 */
     scenes?: string;
     /** 使用分组 */
-    group?: string;
+    groupName?: string;
     /** 查询区域 */
     locale?: '0' | '1' | '2';
   };
@@ -72,13 +74,13 @@ declare namespace CommApi {
   };
 
   type ResultVOObject = {
-    /** 响应时间戳 */
-    timestamp?: number;
     message?: string;
     /** 响应码 */
     code?: number;
     /** 结果数据 */
     data?: Record<string, any>;
+    /** 响应时间戳 */
+    timestamp?: number;
     /** 链路跨度Id */
     spanId?: number;
   };
